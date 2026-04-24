@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Store Health Report · LKST1838 · Mar-26</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #0f0e0c;
+  --ink2: #3d3c38;
+  --ink3: #7a7970;
+  --ink4: #b8b6ac;
+  --paper: #f5f3ee;
+  --paper2: #ede9e1;
+  --paper3: #e4dfd5;
+  --white: #ffffff;
+  --accent: #d4522a;
+  --accent2: #2a7dd4;
+  --green: #2e7d32;
+  --green-bg: #e8f5e9;
+  --amber: #b45309;
+  --amber-bg: #fef3c7;
+  --red: #b91c1c;
+  --red-bg: #fee2e2;
+  --blue: #1e40af;
+  --blue-bg: #dbeafe;
+  --purple: #5b21b6;
+  --purple-bg: #ede9fe;
+  --bd: rgba(15,14,12,0.12);
+  --bd2: rgba(15,14,12,0.22);
+  --r: 6px; --rl: 12px;
+  --shadow: 0 1px 3px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+  --shadow-lg: 0 4px 6px rgba(0,0,0,.07), 0 10px 40px rgba(0,0,0,.1);
+}
+@media(prefers-color-scheme:dark){:root{
+  --ink:#f0ede6;--ink2:#c8c4ba;--ink3:#7a7870;--ink4:#4a4840;
+  --paper:#141310;--paper2:#1e1c18;--paper3:#252320;
+  --white:#1e1c18;--bd:rgba(240,237,230,.10);--bd2:rgba(240,237,230,.20);
+  --green-bg:#1a3d1c;--amber-bg:#2d1f00;--red-bg:#2d0f0f;
+  --blue-bg:#0f1e40;--purple-bg:#1e1030;
+}}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Sora',sans-serif;background:var(--paper);color:var(--ink);font-size:13px;line-height:1.6;}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:var(--paper2);}
+::-webkit-scrollbar-thumb{background:var(--ink4);border-radius:3px;}
+
+/* ── LAYOUT ── */
+.page{max-width:1100px;margin:0 auto;padding:24px 20px 80px;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+.four-col{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+@media(max-width:700px){.two-col,.three-col,.four-col{grid-template-columns:1fr 1fr;}}
+@media(max-width:480px){.two-col,.three-col,.four-col{grid-template-columns:1fr;}}
+
+/* ── CONFIG BAR ── */
+.config-bar{background:var(--ink);color:var(--paper);border-radius:var(--rl);padding:16px 20px;margin-bottom:24px;display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;}
+.cfg-f{display:flex;flex-direction:column;gap:4px;flex:1;min-width:140px;}
+.cfg-lbl{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink4);opacity:.7;}
+.cfg-sel,.cfg-inp{font-family:'Sora',sans-serif;font-size:12px;padding:7px 10px;border-radius:var(--r);border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);color:var(--paper);width:100%;outline:none;}
+.cfg-sel:focus,.cfg-inp:focus{border-color:rgba(255,255,255,.4);}
+.cfg-sel option{background:var(--ink);color:var(--paper);}
+.gen-btn{font-family:'Sora',sans-serif;font-size:12px;font-weight:700;padding:8px 22px;border-radius:var(--r);border:none;background:var(--accent);color:#fff;cursor:pointer;white-space:nowrap;letter-spacing:.02em;transition:opacity .15s;}
+.gen-btn:hover{opacity:.85;}
+.ts-badge{font-size:10px;color:var(--ink4);opacity:.6;margin-left:auto;align-self:flex-end;white-space:nowrap;}
+
+/* ── CARDS ── */
+.card{background:var(--white);border:1px solid var(--bd);border-radius:var(--rl);overflow:hidden;box-shadow:var(--shadow);}
+.card-hdr{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--bd);}
+.card-hdr.collapsed{border-bottom:none;}
+.hdr-icon{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
+.hdr-title{font-size:13px;font-weight:700;color:var(--ink);letter-spacing:.01em;}
+.hdr-right{margin-left:auto;display:flex;align-items:center;gap:8px;}
+.card-body{padding:18px;}
+.collapse-btn{width:24px;height:24px;border-radius:50%;border:1px solid var(--bd);background:var(--paper2);color:var(--ink3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;transition:all .2s;flex-shrink:0;}
+.collapse-btn:hover{background:var(--paper3);}
+.collapsible{overflow:hidden;transition:max-height .35s ease, opacity .3s ease;}
+.collapsible.closed{max-height:0!important;opacity:0;}
+
+/* ── STORE HEADER ── */
+.store-hdr{background:var(--ink);color:var(--paper);border-radius:var(--rl);padding:28px;margin-bottom:16px;position:relative;overflow:hidden;box-shadow:var(--shadow-lg);}
+.store-hdr::before{content:'';position:absolute;top:-40px;right:-40px;width:300px;height:300px;background:radial-gradient(circle,rgba(212,82,42,.15) 0%,transparent 70%);pointer-events:none;}
+.sh-top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap;}
+.sh-left{}
+.store-eyebrow{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink4);opacity:.6;margin-bottom:6px;}
+.store-name{font-family:'DM Serif Display',serif;font-size:28px;color:var(--paper);line-height:1.15;margin-bottom:4px;}
+.store-sub{font-size:11px;color:var(--ink4);opacity:.7;}
+.sh-badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px;}
+.sbdg{font-size:10px;font-weight:600;padding:3px 10px;border-radius:20px;border:1px solid rgba(255,255,255,.15);color:rgba(240,237,230,.75);background:rgba(255,255,255,.07);}
+.sbdg.coco{background:rgba(42,125,212,.25);color:#7ab8f5;border-color:rgba(42,125,212,.3);}
+.sbdg.fofo{background:rgba(91,33,182,.25);color:#c4b5fd;border-color:rgba(91,33,182,.3);}
+.sh-meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-top:20px;padding-top:18px;border-top:1px solid rgba(255,255,255,.1);}
+.meta-item{display:flex;flex-direction:column;gap:2px;}
+.mk{font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink4);opacity:.5;}
+.mv{font-size:12px;font-weight:600;color:var(--paper);opacity:.9;}
+
+/* ── SCORE RING ── */
+.score-wrap{display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0;}
+.score-svg{transform:rotate(-90deg);}
+.score-num{font-family:'DM Serif Display',serif;font-size:30px;font-weight:400;}
+.score-lbl{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;opacity:.5;text-align:center;}
+
+/* ── SECTION SCORES ── */
+.sec-score-num{font-family:'DM Mono',monospace;font-size:20px;font-weight:500;}
+.sec-badge{font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:.02em;}
+.bg-grn{background:var(--green-bg);color:var(--green);}
+.bg-amb{background:var(--amber-bg);color:var(--amber);}
+.bg-red{background:var(--red-bg);color:var(--red);}
+.bg-blu{background:var(--blue-bg);color:var(--blue);}
+.bg-pur{background:var(--purple-bg);color:var(--purple);}
+.col-grn{color:var(--green);}
+.col-amb{color:var(--amber);}
+.col-red{color:var(--red);}
+
+/* ── METRIC CARDS ── */
+.mc{background:var(--paper2);border-radius:var(--r);padding:14px 16px;border:1px solid var(--bd);}
+.mc-lbl{font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--ink3);margin-bottom:6px;}
+.mc-val{font-family:'DM Mono',monospace;font-size:22px;font-weight:500;color:var(--ink);line-height:1.2;}
+.mc-sub{font-size:10px;color:var(--ink3);margin-top:4px;}
+.mc-chg{font-size:12px;font-weight:700;margin-top:3px;}
+.mc-bar{height:3px;background:var(--paper3);border-radius:2px;margin-top:8px;overflow:hidden;}
+.mc-bar-fill{height:3px;border-radius:2px;transition:width .6s ease;}
+
+/* ── TABLES ── */
+.data-tbl{width:100%;border-collapse:collapse;}
+.data-tbl th{font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3);padding:8px 12px;text-align:left;background:var(--paper2);border-bottom:1px solid var(--bd);}
+.data-tbl th.r,.data-tbl td.r{text-align:right;}
+.data-tbl td{padding:10px 12px;border-bottom:1px solid var(--bd);font-size:12px;vertical-align:middle;}
+.data-tbl tr:last-child td{border-bottom:none;}
+.data-tbl tr:hover td{background:var(--paper2);}
+.data-tbl td.kn{font-weight:600;color:var(--ink);}
+.data-tbl td.src{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink3);}
+
+/* ── PILLS ── */
+.pill{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;}
+.pill-g{background:var(--green-bg);color:var(--green);}
+.pill-a{background:var(--amber-bg);color:var(--amber);}
+.pill-r{background:var(--red-bg);color:var(--red);}
+.pill-b{background:var(--blue-bg);color:var(--blue);}
+.pill-n{background:var(--paper3);color:var(--ink3);}
+.dot{width:6px;height:6px;border-radius:50%;display:inline-block;}
+
+/* ── VARIANCE TEXT ── */
+.pos{color:var(--green);font-weight:700;}
+.neg{color:var(--red);font-weight:700;}
+.neu{color:var(--ink3);}
+
+/* ── INSIGHT BOXES ── */
+.insight{border-left:3px solid var(--accent2);padding:12px 14px;background:var(--blue-bg);border-radius:0 var(--r) var(--r) 0;margin-top:14px;font-size:12px;color:var(--ink2);line-height:1.75;}
+.insight.warn{border-left-color:var(--amber);background:var(--amber-bg);}
+.insight.alert{border-left-color:var(--red);background:var(--red-bg);}
+.insight.good{border-left-color:var(--green);background:var(--green-bg);}
+.insight.corr{border-left-color:var(--purple);background:var(--purple-bg);}
+.insight-lbl{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:5px;display:block;}
+
+/* ── CHART CONTAINERS ── */
+.chart-wrap{position:relative;width:100%;background:var(--paper2);border-radius:var(--r);border:1px solid var(--bd);padding:16px;}
+.chart-title{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3);margin-bottom:12px;}
+canvas{display:block;width:100%!important;}
+
+/* ── TABS ── */
+.tabs{display:flex;gap:2px;background:var(--paper2);border-radius:var(--r);padding:3px;margin-bottom:16px;border:1px solid var(--bd);}
+.tab{font-size:11px;font-weight:600;padding:6px 14px;border-radius:4px;cursor:pointer;color:var(--ink3);border:none;background:transparent;transition:all .15s;}
+.tab.active{background:var(--white);color:var(--ink);box-shadow:var(--shadow);}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+
+/* ── PLAYBOOK ── */
+.pb-item{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--bd);}
+.pb-item:last-child{border-bottom:none;}
+.pb-badge{min-width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px;}
+.pb-r{background:var(--red-bg);color:var(--red);}
+.pb-a{background:var(--amber-bg);color:var(--amber);}
+.pb-b{background:var(--blue-bg);color:var(--blue);}
+.pb-head{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.pb-tag{font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;background:var(--paper3);color:var(--ink3);border:1px solid var(--bd);letter-spacing:.04em;text-transform:uppercase;}
+.pb-body{font-size:12px;color:var(--ink2);line-height:1.65;}
+
+/* ── WEIGHT BARS ── */
+.wt-item{display:flex;flex-direction:column;gap:5px;padding:10px 12px;background:var(--paper2);border-radius:var(--r);border:1px solid var(--bd);}
+.wt-row{display:flex;justify-content:space-between;align-items:baseline;}
+.wt-n{font-size:11px;font-weight:600;color:var(--ink2);}
+.wt-p{font-family:'DM Mono',monospace;font-size:14px;font-weight:500;color:var(--ink);}
+.wt-track{height:5px;background:var(--paper3);border-radius:3px;overflow:hidden;}
+.wt-fill{height:5px;border-radius:3px;}
+
+/* ── FUNNEL VIZ ── */
+.funnel-step{display:flex;align-items:center;gap:12px;padding:10px 0;}
+.funnel-label{font-size:11px;font-weight:600;color:var(--ink2);width:100px;flex-shrink:0;}
+.funnel-bar-wrap{flex:1;background:var(--paper3);border-radius:4px;height:28px;overflow:hidden;position:relative;}
+.funnel-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding:0 10px;transition:width .8s ease;}
+.funnel-fill-lbl{font-size:11px;font-weight:700;color:#fff;}
+.funnel-val{font-family:'DM Mono',monospace;font-size:12px;font-weight:500;color:var(--ink);width:100px;text-align:right;flex-shrink:0;}
+.funnel-arrow{text-align:center;font-size:10px;color:var(--ink3);padding:3px 0;margin-left:112px;}
+
+/* ── TOGGLE SWITCH ── */
+.toggle-row{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.toggle-lbl{font-size:11px;font-weight:600;color:var(--ink2);}
+.toggle{position:relative;width:36px;height:20px;}
+.toggle input{opacity:0;width:0;height:0;}
+.slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:var(--paper3);border-radius:20px;border:1px solid var(--bd);transition:.3s;}
+.slider:before{position:absolute;content:"";height:14px;width:14px;left:2px;bottom:2px;background:var(--ink3);border-radius:50%;transition:.3s;}
+input:checked+.slider{background:var(--accent2);}
+input:checked+.slider:before{transform:translateX(16px);background:#fff;}
+
+/* ── SEARCH DROPDOWN ── */
+.search-box{position:relative;}
+.search-inp{width:100%;font-family:'Sora',sans-serif;font-size:13px;padding:10px 14px 10px 36px;border-radius:var(--r);border:1px solid var(--bd2);background:var(--white);color:var(--ink);outline:none;transition:border .15s;}
+.search-inp:focus{border-color:var(--accent2);}
+.search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--ink3);font-size:13px;pointer-events:none;}
+.search-dropdown{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--white);border:1px solid var(--bd2);border-radius:var(--r);box-shadow:var(--shadow-lg);z-index:100;max-height:220px;overflow-y:auto;display:none;}
+.search-dropdown.open{display:block;}
+.search-opt{padding:9px 14px;font-size:12px;font-weight:500;cursor:pointer;border-bottom:1px solid var(--bd);color:var(--ink);transition:background .1s;}
+.search-opt:last-child{border-bottom:none;}
+.search-opt:hover,.search-opt.selected{background:var(--blue-bg);color:var(--blue);}
+.search-opt .opt-sub{font-size:10px;color:var(--ink3);font-weight:400;}
+
+/* ── MISC ── */
+.divider{border:none;border-top:1px solid var(--bd);margin:16px 0;}
+.edit-ta{width:100%;font-family:'Sora',sans-serif;font-size:12px;padding:10px 12px;border-radius:var(--r);border:1px solid var(--bd2);background:var(--paper2);color:var(--ink);resize:vertical;min-height:52px;line-height:1.5;outline:none;transition:border .15s;}
+.edit-ta:focus{border-color:var(--accent2);}
+.action-bar{display:flex;gap:8px;flex-wrap:wrap;padding:14px 18px;border-top:1px solid var(--bd);}
+.act-btn{font-family:'Sora',sans-serif;font-size:11px;font-weight:600;padding:6px 14px;border-radius:var(--r);border:1px solid var(--bd2);background:transparent;color:var(--ink2);cursor:pointer;transition:all .15s;}
+.act-btn:hover{background:var(--paper2);}
+.act-btn.prim{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+.print-row{display:flex;justify-content:flex-end;gap:8px;margin-bottom:12px;}
+.section-sep{height:8px;}
+.krow{display:flex;justify-content:space-between;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--bd);}
+.krow:last-child{border-bottom:none;}
+.krow-k{font-size:12px;color:var(--ink2);font-weight:500;}
+.krow-d{font-size:10px;color:var(--ink3);margin-top:1px;}
+.krow-v{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;text-align:right;}
+.krow-s{font-size:10px;color:var(--ink3);text-align:right;margin-top:1px;}
+.tag-crit{font-size:10px;font-weight:700;background:var(--red-bg);color:var(--red);padding:1px 7px;border-radius:20px;}
+.tag-warn{font-size:10px;font-weight:700;background:var(--amber-bg);color:var(--amber);padding:1px 7px;border-radius:20px;}
+.tag-ok{font-size:10px;font-weight:700;background:var(--green-bg);color:var(--green);padding:1px 7px;border-radius:20px;}
+
+@media print{.config-bar,.print-row,.action-bar,.edit-ta,.collapse-btn,.tabs-nav{display:none!important;}.collapsible{max-height:none!important;opacity:1!important;}}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- CONFIG BAR -->
+<div class="config-bar">
+  <div class="cfg-f" style="max-width:260px;">
+    <span class="cfg-lbl">Store</span>
+    <div class="search-box" id="storeSearch">
+      <span class="search-icon">⌕</span>
+      <input class="search-inp cfg-inp" id="storeInp" placeholder="Search store code or name…" autocomplete="off" oninput="filterStores()" onfocus="openDD()" value="LKST1838 — Chennai Pallavaram">
+      <div class="search-dropdown" id="storeDD"></div>
+    </div>
+  </div>
+  <div class="cfg-f" style="max-width:140px;">
+    <span class="cfg-lbl">Granularity</span>
+    <select class="cfg-sel" id="granSel" onchange="refreshPeriods()">
+      <option value="monthly" selected>Monthly</option>
+      <option value="weekly">Weekly</option>
+      <option value="quarterly">Quarterly</option>
+    </select>
+  </div>
+  <div class="cfg-f" style="max-width:160px;">
+    <span class="cfg-lbl">Period</span>
+    <select class="cfg-sel" id="periodSel"></select>
+  </div>
+  <div class="cfg-f" style="max-width:200px;">
+    <span class="cfg-lbl">Benchmark</span>
+    <select class="cfg-sel" id="bmSel">
+      <option value="lm_ty" selected>vs Last month (this year)</option>
+      <option value="lm_ly">vs Last year same month</option>
+      <option value="target">vs Target</option>
+    </select>
+  </div>
+  <button class="gen-btn" onclick="alert('Live data fetch requires the Claude + PowerBI MCP session. This report shows validated Mar-26 data.')">Regenerate</button>
+  <span class="ts-badge">Generated 24 Apr 2026 · Store Insights / Offline Operations</span>
+</div>
+
+<!-- REPORT -->
+<div class="print-row">
+  <button class="act-btn" onclick="window.print()">⎙ Print / PDF</button>
+</div>
+
+<!-- 0. STORE HEADER -->
+<div class="store-hdr" style="margin-bottom:16px;">
+  <div class="sh-top">
+    <div class="sh-left">
+      <div class="store-eyebrow">Store Health Diagnostic Report</div>
+      <div class="store-name">Chennai Pallavaram</div>
+      <div class="store-sub">LKST1838 &nbsp;·&nbsp; South &nbsp;·&nbsp; Tamil Nadu &nbsp;·&nbsp; Chennai Metro</div>
+      <div class="sh-badges">
+        <span class="sbdg coco">COCO</span>
+        <span class="sbdg">Tier-I</span>
+        <span class="sbdg">1,000 sq ft</span>
+        <span class="sbdg">2 Clinics</span>
+        <span class="sbdg">Mar-26</span>
+        <span class="sbdg">vs Feb-26 (LM)</span>
+        <span class="sbdg">SSG Store</span>
+      </div>
+    </div>
+    <div class="score-wrap">
+      <svg class="score-svg" width="90" height="90" viewBox="0 0 90 90">
+        <circle cx="45" cy="45" r="38" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="7"/>
+        <circle cx="45" cy="45" r="38" fill="none" stroke="#f59e0b" stroke-width="7"
+          stroke-dasharray="238.76" stroke-dashoffset="57.3" stroke-linecap="round"/>
+      </svg>
+      <div style="margin-top:-68px;text-align:center;position:relative;z-index:1;">
+        <div class="score-num" style="color:#f59e0b;">76</div>
+      </div>
+      <div style="margin-top:4px;" class="score-lbl" style="color:rgba(240,237,230,.5);">AI Health Score<br><span style="color:#f59e0b;opacity:1;">Good</span></div>
+    </div>
+  </div>
+  <div class="sh-meta">
+    <div class="meta-item"><span class="mk">ZM</span><span class="mv">Kapilavai P. Shankar</span></div>
+    <div class="meta-item"><span class="mk">AOM</span><span class="mv">Mohan Kumar</span></div>
+    <div class="meta-item"><span class="mk">Circle Head</span><span class="mv">Vishwajit Gaikwad</span></div>
+    <div class="meta-item"><span class="mk">Opened</span><span class="mv">05-Jun-2023</span></div>
+    <div class="meta-item"><span class="mk">Maturity</span><span class="mv">FY-24 (upto FY25)</span></div>
+    <div class="meta-item"><span class="mk">Rent</span><span class="mv">₹1,20,000/mo</span></div>
+    <div class="meta-item"><span class="mk">Tango</span><span class="mv">3.0 · Aug-2025</span></div>
+    <div class="meta-item"><span class="mk">Trainer</span><span class="mv">John Samuel</span></div>
+  </div>
+</div>
+
+<!-- SECTION SCORE ROW -->
+<div class="four-col" style="margin-bottom:16px;">
+  <div class="mc"><div class="mc-lbl">Revenue</div><div class="mc-val col-grn">92</div><div class="mc-sub">Excellent · Net Sales +30.7%</div><div class="mc-bar"><div class="mc-bar-fill" style="width:92%;background:#2e7d32;"></div></div></div>
+  <div class="mc"><div class="mc-lbl">Operations</div><div class="mc-val col-amb">62</div><div class="mc-sub">Needs attention · ET +8.8%</div><div class="mc-bar"><div class="mc-bar-fill" style="width:62%;background:#b45309;"></div></div></div>
+  <div class="mc"><div class="mc-lbl">Merchandising</div><div class="mc-val col-grn">83</div><div class="mc-sub">Excellent · UPT +5.4%</div><div class="mc-bar"><div class="mc-bar-fill" style="width:83%;background:#2e7d32;"></div></div></div>
+  <div class="mc"><div class="mc-lbl">Infrastructure</div><div class="mc-val" style="color:var(--ink);">72</div><div class="mc-sub">Good · Contextual</div><div class="mc-bar"><div class="mc-bar-fill" style="width:72%;background:#1e40af;"></div></div></div>
+</div>
+
+<!-- 1. VALIDATION TABLE -->
+<div class="card" style="margin-bottom:16px;">
+  <div class="card-hdr">
+    <div class="hdr-icon" style="background:var(--blue-bg);color:var(--blue);">DB</div>
+    <span class="hdr-title">Raw data validation — all KPIs from Store Insights model</span>
+    <div class="hdr-right">
+      <span style="font-size:10px;color:var(--ink3);">Fabric XMLA · Mar-26 vs Feb-26</span>
+      <button class="collapse-btn" onclick="toggleSection('val')">−</button>
+    </div>
+  </div>
+  <div class="collapsible" id="val" style="max-height:800px;">
+    <div style="overflow-x:auto;">
+      <table class="data-tbl">
+        <thead><tr>
+          <th style="width:20%">KPI</th><th style="width:22%">Source</th>
+          <th class="r" style="width:14%">Mar-26</th>
+          <th class="r" style="width:14%">Feb-26</th>
+          <th class="r" style="width:10%">Var %</th>
+          <th class="r" style="width:10%">Abs Δ</th>
+          <th class="r" style="width:10%">Status</th>
+        </tr></thead>
+        <tbody id="val-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- 2. REVENUE -->
+<div class="card" style="margin-bottom:16px;">
+  <div class="card-hdr">
+    <div class="hdr-icon" style="background:var(--amber-bg);color:var(--amber);">2</div>
+    <span class="hdr-title">Revenue &amp; financial performance</span>
+    <div class="hdr-right">
+      <span class="sec-score-num col-grn">92</span>
+      <span class="sec-badge bg-grn">Excellent</span>
+      <button class="collapse-btn" onclick="toggleSection('rev')">−</button>
+    </div>
+  </div>
+  <div class="collapsible" id="rev" style="max-height:2000px;">
+    <div class="card-body">
+      <div class="four-col" style="margin-bottom:16px;">
+        <div class="mc"><div class="mc-lbl">Net Sales</div><div class="mc-val">₹9.88L</div><div class="mc-sub">Feb: ₹7.55L</div><div class="mc-chg pos">+30.7%</div></div>
+        <div class="mc"><div class="mc-lbl">Net Orders</div><div class="mc-val">320.7</div><div class="mc-sub">Feb: 258.9</div><div class="mc-chg pos">+23.8%</div></div>
+        <div class="mc"><div class="mc-lbl">Footfall</div><div class="mc-val neg">768</div><div class="mc-sub">Feb: 1,117</div><div class="mc-chg neg">−31.2%</div></div>
+        <div class="mc"><div class="mc-lbl">Conversion</div><div class="mc-val pos">41.75%</div><div class="mc-sub">Feb: 23.18%</div><div class="mc-chg pos">+80.1%</div></div>
+      </div>
+
+      <!-- TABS -->
+      <div class="tabs" id="rev-tabs">
+        <button class="tab active" onclick="switchTab('rev','table')">Table</button>
+        <button class="tab" onclick="switchTab('rev','charts')">Charts</button>
+        <button class="tab" onclick="switchTab('rev','funnel')">Funnel</button>
+      </div>
+      <div class="tab-panel active" id="rev-table">
+        <div style="overflow-x:auto;">
+          <table class="data-tbl">
+            <thead><tr><th>KPI</th><th class="r">Mar-26</th><th class="r">Feb-26</th><th class="r">Var %</th><th class="r">Status</th></tr></thead>
+            <tbody>
+              <tr><td class="kn">Net Sales</td><td class="r">₹9,87,657</td><td class="r">₹7,55,468</td><td class="r"><span class="pos">+30.7%</span></td><td class="r"><span class="pill pill-g"><span class="dot" style="background:var(--green)"></span>Healthy</span></td></tr>
+              <tr><td class="kn">Net Orders</td><td class="r">320.7</td><td class="r">258.9</td><td class="r"><span class="pos">+23.8%</span></td><td class="r"><span class="pill pill-g"><span class="dot" style="background:var(--green)"></span>Healthy</span></td></tr>
+              <tr><td class="kn">Footfall</td><td class="r">768</td><td class="r">1,117</td><td class="r"><span class="neg">−31.2%</span></td><td class="r"><span class="pill pill-r"><span class="dot" style="background:var(--red)"></span>Critical</span></td></tr>
+              <tr><td class="kn">Conversion %</td><td class="r">41.75%</td><td class="r">23.18%</td><td class="r"><span class="pos">+80.1%</span></td><td class="r"><span class="pill pill-g"><span class="dot" style="background:var(--green)"></span>Healthy</span></td></tr>
+              <tr><td class="kn">Net ATV</td><td class="r">₹3,080</td><td class="r">₹2,918</td><td class="r"><span class="pos">+5.6%</span></td><td class="r"><span class="pill pill-g"><span class="dot" style="background:var(--green)"></span>Healthy</span></td></tr>
+              <tr><td class="kn">PSPD (₹/day)</td><td class="r">₹24,691</td><td class="r">₹20,985</td><td class="r"><span class="pos">+17.7%</span></td><td class="r"><span class="pill pill-g"><span class="dot" style="background:var(--green)"></span>Healthy</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="divider"></div>
+        <div class="krow"><div><div class="krow-k">Revenue above benchmark</div><div class="krow-d">Mar-26 net sales exceed Feb-26</div></div><div><div class="krow-v pos">+₹2,32,189</div><div class="krow-s">surplus vs benchmark</div></div></div>
+        <div class="krow"><div><div class="krow-k">Conversion lift (extra orders generated)</div><div class="krow-d">Higher conv rate on lower footfall</div></div><div><div class="krow-v pos">+61.8 bills</div><div class="krow-s">more than Feb-26</div></div></div>
+        <div class="krow"><div><div class="krow-k">PSPD direction</div><div class="krow-d">Daily sales productivity (period-adjusted)</div></div><div><div class="krow-v pos">₹24,691/day</div><div class="krow-s">+17.7% vs Feb</div></div></div>
+      </div>
+      <div class="tab-panel" id="rev-charts">
+        <div class="two-col">
+          <div class="chart-wrap"><div class="chart-title">Net Sales vs Orders — Mar vs Feb</div><canvas id="c-rev-bar" height="200"></canvas></div>
+          <div class="chart-wrap"><div class="chart-title">ATV vs Conversion trend</div><canvas id="c-atv-cv" height="200"></canvas></div>
+        </div>
+        <div class="chart-wrap" style="margin-top:12px;"><div class="chart-title">PSPD comparison (₹/day)</div><canvas id="c-pspd" height="140"></canvas></div>
+      </div>
+      <div class="tab-panel" id="rev-funnel">
+        <div style="padding:8px 0;">
+          <div class="funnel-step">
+            <span class="funnel-label">Footfall</span>
+            <div class="funnel-bar-wrap"><div class="funnel-fill" id="fn-ff" style="width:100%;background:#378ADD;"><span class="funnel-fill-lbl">768</span></div></div>
+            <span class="funnel-val">768</span>
+          </div>
+          <div class="funnel-arrow">↓ Conversion 41.75% · 320.7 bills generated</div>
+          <div class="funnel-step">
+            <span class="funnel-label">Net Orders</span>
+            <div class="funnel-bar-wrap"><div class="funnel-fill" id="fn-ord" style="width:41.75%;background:#1D9E75;"><span class="funnel-fill-lbl">321</span></div></div>
+            <span class="funnel-val">320.7</span>
+          </div>
+          <div class="funnel-arrow">↓ ATV ₹3,080 · each bill worth ₹3,080</div>
+          <div class="funnel-step">
+            <span class="funnel-label">Revenue</span>
+            <div class="funnel-bar-wrap"><div class="funnel-fill" id="fn-rev" style="width:35%;background:#534AB7;"><span class="funnel-fill-lbl">₹9.88L</span></div></div>
+            <span class="funnel-val">₹9,87,657</span>
+          </div>
+          <div class="insight" style="margin-top:14px;">
+            <span class="insight-lbl">Funnel analysis</span>
+            Footfall is 31.2% lower in March — yet the store generated 23.8% more orders and 30.7% more revenue. This is only possible because conversion jumped from 23.18% to 41.75% (+80%). Every walk-in is being captured far more effectively than in February.
+          </div>
+        </div>
+      </div>
+      <div class="insight good" style="margin-top:14px;">
+        <span class="insight-lbl">AI analysis — revenue &amp; financial performance</span>
+        March 2026 net sales of ₹9,87,657 are 30.7% above February's ₹7,55,468, driven entirely by a remarkable conversion surge — 41.75% vs 23.18% in February. Despite 349 fewer walk-ins, the store generated 62 additional bills by converting a far greater share of every customer who entered. PSPD at ₹24,691/day confirms this is genuine productivity improvement, not just a longer month effect. The ATV also improved by ₹162 to ₹3,080, meaning the store is both converting more and extracting more value per transaction.
+      </div>
+      <div class="insight corr" style="margin-top:10px;">
+        <span class="insight-lbl">Correlation engine insight</span>
+        The KPI pair divergence here is unusual — footfall and revenue are moving in opposite directions (footfall −31.2%, revenue +30.7%). This is a conversion-driven reversal: the funnel efficiency gain is so large it more than compensates for the walk-in volume drop. The leak risk is entirely in footfall — if conversion normalises to typical levels while footfall remains depressed, revenue will collapse. Footfall recovery is the single most important lever for sustaining this revenue trajectory.
+      </div>
+      <div class="insight warn" style="margin-top:10px;">
+        <span class="insight-lbl">Revenue section rating rationale — 92/100</span>
+        Net Sales score 95×0.40 = 38.0 · Conversion score 95×0.35 = 33.25 · ATV score 85×0.25 = 21.25 → <strong>Total: 92/100 (Excellent)</strong>. All three revenue KPIs are materially above benchmark. The only concern embedded in the score is the footfall dependency — if this conversion rate reflects a data anomaly or short-period effect, the underlying revenue base is fragile.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 3. OPERATIONS -->
+<div class="card" style="margin-bottom:16px;">
+  <div class="card-hdr">
+    <div class="hdr-icon" style="background:var(--purple-bg);color:var(--purple);">3</div>
+    <span class="hdr-title">Operations &amp; staffing</span>
+    <div class="hdr-right">
+      <span class="sec-score-num col-amb">62</span>
+      <span class="sec-badge bg-amb">Needs attention</span>
+      <button class="collapse-btn" onclick="toggleSection('ops')">−</button>
+    </div>
+  </div>
+  <div class="collapsible" id="ops" style="max-height:2000px;">
+    <div class="card-body">
+      <div class="four-col" style="margin-bottom:16px;">
+        <div class="mc"><div class="mc-lbl">ET Wait Time</div><div class="mc-val col-amb">4.18 min</div><div class="mc-sub">Feb: 3.85 min</div><div class="mc-chg neg">+8.8% ↑ worsening</div></div>
+        <div class="mc"><div class="mc-lbl">Orders / Staff</div><div class="mc-val pos">3.84</div><div class="mc-sub">Feb: 3.38</div><div class="mc-chg pos">+13.5%</div></div>
+        <div class="mc"><div class="mc-lbl">Rev per Staff</div><div class="mc-val">₹11,830</div><div class="mc-sub">Feb: ₹9,871</div><div class="mc-chg pos">+19.9%</div></div>
+        <div class="mc"><div class="mc-lbl">Clinics</div><div class="mc-val">2</div><div class="mc-sub">Eye test capacity</div></div>
+      </div>
+      <div class="tabs" id="ops-tabs">
+        <button class="tab active" onclick="switchTab('ops','table')">Table</button>
+        <button class="tab" onclick="switchTab('ops','charts')">Charts</button>
+      </div>
+      <div class="tab-panel active" id="ops-table">
+        <table class="data-tbl">
+          <thead><tr><th>KPI</th><th class="r">Mar-26</th><th class="r">Feb-26</th><th class="r">Var %</th><th class="r">Status</th></tr></thead>
+          <tbody>
+            <tr><td class="kn">ET Wait Time (avg)</td><td class="r">4.18 min</td><td class="r">3.85 min</td><td class="r"><span class="neg">+8.8%</span></td><td class="r"><span class="pill pill-r"><span class="dot" style="background:var(--red)"></span>Worsening</span></td></tr>
+            <tr><td class="kn">NOB per Staff</td><td class="r">3.84</td><td class="r">3.38</td><td class="r"><span class="pos">+13.5%</span></td><td class="r"><span class="pill pill-g"><span class="dot" style="background:var(--green)"></span>Healthy</span></td></tr>
+            <tr><td class="kn">Revenue per Staff (est.)</td><td class="r">₹11,830</td><td class="r">₹9,871</td><td class="r"><span class="pos">+19.9%</span></td><td class="r"><span class="pill pill-g"><span class="dot" style="background:var(--green)"></span>Healthy</span></td></tr>
+            <tr><td class="kn">Return / cancel rate</td><td class="r">3.56%</td><td class="r">3.75%</td><td class="r"><span class="pos">−5.1%</span></td><td class="r"><span class="pill pill-g"><span class="dot" style="background:var(--green)"></span>Improving</span></td></tr>
+          </tbody>
+        </table>
+        <div class="divider"></div>
+        <div class="krow">
+          <div><div class="krow-k">ET bottleneck status</div><div class="krow-d">Threshold: &gt;8 min Critical · 6.5–8 min Watch · &lt;6.5 min Normal</div></div>
+          <div style="text-align:right;"><span class="tag-ok">Normal — 4.18 min</span><div class="krow-s" style="margin-top:4px;">+0.34 min vs Feb · monitor trend</div></div>
+        </div>
+        <div class="krow">
+          <div><div class="krow-k">Staff productivity</div><div class="krow-d">Orders per staff vs benchmark</div></div>
+          <div style="text-align:right;"><div class="krow-v pos">3.84 orders/staff</div><div class="krow-s">+0.46 above Feb · strong</div></div>
+        </div>
+        <div style="margin-top:14px;"><div style="font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:5px;">Grooming &amp; discipline — add from store visit</div><textarea class="edit-ta" placeholder="e.g. Staff in uniform, ID cards visible. Morning huddle conducted on all days."></textarea></div>
+      </div>
+      <div class="tab-panel" id="ops-charts">
+        <div class="two-col">
+          <div class="chart-wrap"><div class="chart-title">ET Wait Time (min) — Mar vs Feb</div><canvas id="c-et" height="180"></canvas></div>
+          <div class="chart-wrap"><div class="chart-title">NOB per Staff</div><canvas id="c-nob" height="180"></canvas></div>
+        </div>
+      </div>
+      <div class="insight warn" style="margin-top:14px;">
+        <span class="insight-lbl">AI analysis — operations &amp; staffing</span>
+        Eye test wait time has edged up to 4.18 min from 3.85 min in February (+8.8%), moving in the wrong direction though still well below the 6.5 min watch threshold. The notable concern is that higher conversion in March has put more pressure on the ET clinic — 320 vs 259 eye test cases through the same 2-clinic setup. Orders per staff at 3.84 is 13.5% above February, reflecting genuine staff productivity improvement driven by the higher bill volume. If the conversion rate sustains at current levels, the ET queue will likely breach Watch territory by May without a capacity addition.
+      </div>
+      <div class="insight" style="margin-top:10px;">
+        <span class="insight-lbl">Operations section rating rationale — 62/100</span>
+        ET Wait Time score 40×0.60 = 24.0 (scored 40 because +8.8% worsening) · NOB per Staff score 95×0.40 = 38.0 → <strong>Total: 62/100 (Needs attention)</strong>. The ET deterioration is the sole driver of this section's moderate score. Staff productivity is genuinely strong (+13.5% NOB). Preventive action on ET capacity now will protect this score before conversion growth makes it critical.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 4. MERCHANDISING -->
+<div class="card" style="margin-bottom:16px;">
+  <div class="card-hdr">
+    <div class="hdr-icon" style="background:#E1F5EE;color:#085041;">4</div>
+    <span class="hdr-title">Merchandising &amp; basket quality</span>
+    <div class="hdr-right">
+      <span class="sec-score-num col-grn">83</span>
+      <span class="sec-badge bg-grn">Excellent</span>
+      <button class="collapse-btn" onclick="toggleSection('mer')">−</button>
+    </div>
+  </div>
+  <div class="collapsible" id="mer" style="max-height:2000px;">
+    <div class="card-body">
+      <div class="four-col" style="margin-bottom:16px;">
+        <div class="mc"><div class="mc-lbl">UPT</div><div class="mc-val pos">1.856</div><div class="mc-sub">Feb: 1.761</div><div class="mc-chg pos">+5.4%</div></div>
+        <div class="mc"><div class="mc-lbl">Net ASP (₹/unit)</div><div class="mc-val">₹1,660</div><div class="mc-sub">Feb: ₹1,657</div><div class="mc-chg neu">+0.2%</div></div>
+        <div class="mc"><div class="mc-lbl">Progressive share</div><div class="mc-val col-amb">27.36%</div><div class="mc-sub">Feb: 28.47%</div><div class="mc-chg neg">−3.9%</div></div>
+        <div class="mc"><div class="mc-lbl">Net Qty</div><div class="mc-val">595</div><div class="mc-sub">Feb: 456</div><div class="mc-chg pos">+30.5%</div></div>
+      </div>
+      <div class="tabs" id="mer-tabs">
+        <button class="tab active" onclick="switchTab('mer','table')">Table</button>
+        <button class="tab" onclick="switchTab('mer','charts')">Charts</button>
+      </div>
+      <div class="tab-panel active" id="mer-table">
+        <table class="data-tbl">
+          <thead><tr><th>KPI</th><th class="r">Mar-26</th><th class="r">Feb-26</th><th class="r">Var %</th><th class="r">Status</th></tr></thead>
+          <tbody>
+            <tr><td class="kn">Net Qty (units)</td><td class="r">595</td><td class="r">456</td><td class="r"><span class="pos">+30.5%</span></td><td class="r"><span class="pill pill-g"><span class="dot" style="background:var(--green)"></span>Healthy</span></td></tr>
+            <tr><td class="kn">UPT (units/bill)</td><td class="r">1.856</td><td class="r">1.761</td><td class="r"><span class="pos">+5.4%</span></td><td class="r"><span class="pill pill-g"><span class="dot" style="background:var(--green)"></span>Healthy</span></td></tr>
+            <tr><td class="kn">Net ASP (₹/unit)</td><td class="r">₹1,660</td><td class="r">₹1,657</td><td class="r"><span class="neu">+0.2%</span></td><td class="r"><span class="pill pill-b"><span class="dot" style="background:var(--blue)"></span>On track</span></td></tr>
+            <tr><td class="kn">Eye Net Orders</td><td class="r">173.5</td><td class="r">148.5</td><td class="r"><span class="pos">+16.8%</span></td><td class="r"><span class="pill pill-g"><span class="dot" style="background:var(--green)"></span>Healthy</span></td></tr>
+            <tr><td class="kn">Progressive Orders</td><td class="r">45.6</td><td class="r">37.5</td><td class="r"><span class="pos">+21.6%</span></td><td class="r"><span class="pill pill-g"><span class="dot" style="background:var(--green)"></span>Healthy</span></td></tr>
+            <tr><td class="kn">SV Orders</td><td class="r">121.0</td><td class="r">94.2</td><td class="r"><span class="pos">+28.4%</span></td><td class="r"><span class="pill pill-g"><span class="dot" style="background:var(--green)"></span>Healthy</span></td></tr>
+            <tr><td class="kn">Progressive share %</td><td class="r">27.36%</td><td class="r">28.47%</td><td class="r"><span class="neg">−3.9%</span></td><td class="r"><span class="pill pill-a"><span class="dot" style="background:var(--amber)"></span>Watch</span></td></tr>
+          </tbody>
+        </table>
+        <div class="divider"></div>
+        <div class="krow">
+          <div><div class="krow-k">UPT vs ASP basket diagnosis</div><div class="krow-d">UPT +5.4% · ASP +0.2% → pattern: Basket healthy</div></div>
+          <div style="text-align:right;"><span class="tag-ok">Basket Healthy</span></div>
+        </div>
+        <div class="krow">
+          <div><div class="krow-k">Progressive share vs 25% target</div><div class="krow-d">27.36% in Mar vs 28.47% in Feb</div></div>
+          <div style="text-align:right;"><span class="tag-ok">Above 25% target</span><div class="krow-s">but slipping −1.11 pp MoM</div></div>
+        </div>
+        <div style="margin-top:14px;"><div style="font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:5px;">Display &amp; VM freshness — add from store visit</div><textarea class="edit-ta" placeholder="e.g. Window display updated. Progressive lens recommendation cards at dispensing table."></textarea></div>
+      </div>
+      <div class="tab-panel" id="mer-charts">
+        <div class="two-col">
+          <div class="chart-wrap"><div class="chart-title">UPT &amp; ASP — Mar vs Feb</div><canvas id="c-upt" height="180"></canvas></div>
+          <div class="chart-wrap"><div class="chart-title">Lens mix — SV vs Progressive</div><canvas id="c-lens" height="180"></canvas></div>
+        </div>
+      </div>
+      <div class="insight good" style="margin-top:14px;">
+        <span class="insight-lbl">AI analysis — merchandising &amp; basket quality</span>
+        Basket quality is genuinely strong in March — UPT improved to 1.856 from 1.761 (+5.4%), meaning each customer is buying nearly 0.1 units more per visit. Net ASP at ₹1,660 is essentially flat vs February's ₹1,657, confirming this isn't a cheap-mix issue. The one flag is Progressive share, which slipped from 28.47% to 27.36% — still above the 25% target, but the directional trend needs attention. SV orders grew 28.4% while Progressive grew only 21.6%, suggesting the recommendation mix is tilting toward single-vision as volume scales up.
+      </div>
+      <div class="insight corr" style="margin-top:10px;">
+        <span class="insight-lbl">Merchandising section rating rationale — 83/100</span>
+        UPT score 85×0.50 = 42.5 · ASP score 72×0.30 = 21.6 · Conversion score 95×0.20 = 19.0 → <strong>Total: 83/100 (Excellent)</strong>. UPT growth is the primary driver of this strong score. The Progressive share slip is not yet material enough to drag the score but warrants a weekly coaching target before it becomes structural.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 5. INFRASTRUCTURE -->
+<div class="card" style="margin-bottom:16px;">
+  <div class="card-hdr">
+    <div class="hdr-icon" style="background:var(--paper3);color:var(--ink3);">5</div>
+    <span class="hdr-title">Store infrastructure</span>
+    <div class="hdr-right">
+      <span class="sec-score-num" style="color:var(--blue);">72</span>
+      <span class="sec-badge bg-blu">Good</span>
+      <button class="collapse-btn" onclick="toggleSection('inf')">−</button>
+    </div>
+  </div>
+  <div class="collapsible" id="inf" style="max-height:1200px;">
+    <div class="card-body">
+      <div class="four-col" style="margin-bottom:16px;">
+        <div class="mc"><div class="mc-lbl">Store size</div><div class="mc-val">1,000<span style="font-size:12px;font-weight:400;"> sq ft</span></div></div>
+        <div class="mc"><div class="mc-lbl">PSPD</div><div class="mc-val">₹24,691</div><div class="mc-sub">per day · +17.7% vs Feb</div></div>
+        <div class="mc"><div class="mc-lbl">Sales / sq ft / day</div><div class="mc-val">₹24.7</div><div class="mc-sub">PSPD ÷ 1,000 sq ft</div></div>
+        <div class="mc"><div class="mc-lbl">City tier</div><div class="mc-val">Tier-I</div><div class="mc-sub">Metro · Chennai</div></div>
+      </div>
+      <table class="data-tbl" style="margin-bottom:14px;">
+        <thead><tr><th>KPI</th><th class="r">Mar-26</th><th class="r">Feb-26</th><th class="r">Var %</th><th class="r">Status</th></tr></thead>
+        <tbody>
+          <tr><td class="kn">PSPD (₹/day)</td><td class="r">₹24,691</td><td class="r">₹20,985</td><td class="r"><span class="pos">+17.7%</span></td><td class="r"><span class="pill pill-g"><span class="dot" style="background:var(--green)"></span>Healthy</span></td></tr>
+          <tr><td class="kn">Sales per sq ft / day</td><td class="r">₹24.7</td><td class="r">₹21.0</td><td class="r"><span class="pos">+17.7%</span></td><td class="r"><span class="pill pill-g"><span class="dot" style="background:var(--green)"></span>Healthy</span></td></tr>
+          <tr><td class="kn">Format</td><td class="r">COCO</td><td class="r">—</td><td class="r">—</td><td class="r"><span class="pill pill-b">Info</span></td></tr>
+          <tr><td class="kn">City tier</td><td class="r">Tier-I · Metro</td><td class="r">—</td><td class="r">—</td><td class="r"><span class="pill pill-b">Info</span></td></tr>
+          <tr><td class="kn">Optom clinics</td><td class="r">2</td><td class="r">—</td><td class="r">—</td><td class="r"><span class="pill pill-b">Info</span></td></tr>
+        </tbody>
+      </table>
+      <div style="margin-top:6px;"><div style="font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:5px;">Maintenance issues — add from store visit</div><textarea class="edit-ta" placeholder="e.g. AC functional. Lighting adequate. Trial room locks in good condition."></textarea></div>
+      <div class="insight" style="margin-top:14px;">
+        <span class="insight-lbl">Infrastructure rating rationale — 72/100</span>
+        PSPD of ₹24,691/day is strong at +17.7% vs Feb, and sales per sq ft/day at ₹24.7 indicates healthy space utilisation for a 1,000 sq ft Tier-I store. Infrastructure score held at 72/100 (Good) pending physical audit inputs above. The 2-clinic setup will need a capacity review if conversion continues at current elevated levels.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 6. PLAYBOOK -->
+<div class="card" style="margin-bottom:16px;">
+  <div class="card-hdr">
+    <div class="hdr-icon" style="background:var(--red-bg);color:var(--red);">!</div>
+    <span class="hdr-title">Actionable playbook</span>
+    <div class="hdr-right"><span class="sec-badge bg-red">AI-generated</span><button class="collapse-btn" onclick="toggleSection('play')">−</button></div>
+  </div>
+  <div class="collapsible" id="play" style="max-height:2000px;">
+    <div class="card-body">
+      <div class="pb-item">
+        <div class="pb-badge pb-r">1</div>
+        <div><div class="pb-head">Investigate footfall drop — 349 fewer walk-ins <span class="pb-tag">Immediate</span></div>
+        <div class="pb-body">March footfall of 768 is 31.2% below February's 1,117 — this is the biggest risk in the report. Current high conversion and revenue are masking a structural demand problem. Atul Jindal (ZM) should investigate whether this is a local competition issue, an access/visibility problem, or a March-specific anomaly. If footfall doesn't recover in April, revenue will decline sharply even if conversion stays elevated.</div></div>
+      </div>
+      <div class="pb-item">
+        <div class="pb-badge pb-r">2</div>
+        <div><div class="pb-head">Pre-empt ET queue before conversion pressure peaks <span class="pb-tag">Immediate</span></div>
+        <div class="pb-body">ET wait time has increased from 3.85 to 4.18 min (+8.8%) as 320 cases pass through 2 clinics vs 259 last month. At current conversion, adding 30–40 more bills would push the clinic into Watch territory. Schedule a Teleoptom backup slot for peak hours (12:00–15:00 and 18:00–20:00) before this becomes critical. Assign Harini S (cluster optometrist) to review clinic scheduling this week.</div></div>
+      </div>
+      <div class="pb-item">
+        <div class="pb-badge pb-a">3</div>
+        <div><div class="pb-head">Defend Progressive share — coach on SV upgrade <span class="pb-tag">Today</span></div>
+        <div class="pb-body">Progressive share has slipped from 28.47% to 27.36% (−1.11 pp) even though Progressive orders grew 21.6%. SV orders grew faster at 28.4%, indicating staff default to SV when volume is high. Set a weekly Progressive share target of 28%+. Run a 15-min coaching session with Mohan Kumar (AOM) today: every eye frame customer aged 35+ must receive a Progressive recommendation before billing.</div></div>
+      </div>
+      <div class="pb-item">
+        <div class="pb-badge pb-a">4</div>
+        <div><div class="pb-head">9 AM morning huddle — brief &amp; groom check <span class="pb-tag">Daily</span></div>
+        <div class="pb-body">Conduct daily grooming and uniform compliance check at opening. Share previous day's conversion rate (41.75% target to beat), Progressive share, and one coaching point. Document attendance. Report compliance to AOM Mohan Kumar weekly.</div></div>
+      </div>
+      <div class="pb-item">
+        <div class="pb-badge pb-b">5</div>
+        <div><div class="pb-head">5-day coating attachment sprint <span class="pb-tag">This week</span></div>
+        <div class="pb-body">UPT at 1.856 is strong but there is headroom to push toward 2.0 through coating and accessory attachment. Track Blue-Cut + AR + Transitions attachment rate per staff for 5 consecutive days. Post daily leaderboard in store WhatsApp group. Staff with lowest attachment rate gets a 1:1 session with AOM by end of week.</div></div>
+      </div>
+      <div class="pb-item">
+        <div class="pb-badge pb-b">6</div>
+        <div><div class="pb-head">Hyperlocal footfall recovery campaign <span class="pb-tag">This week</span></div>
+        <div class="pb-body">The footfall drop of 349 walk-ins is the single largest risk in the report. Activate a 2-week hyperlocal campaign: WhatsApp broadcast to CRM database, Google Maps post update, and leaflet drop in the Pallavaram catchment radius. Coordinate with Vishwajit Gaikwad (Circle Head) for approval. Set a weekly footfall target of 900+ to close the Feb gap.</div></div>
+      </div>
+      <div class="pb-item">
+        <div class="pb-badge pb-b">7</div>
+        <div><div class="pb-head">ZM visit — Kapilavai Poorna Shankar <span class="pb-tag">This week</span></div>
+        <div class="pb-body">Overall health score 76/100 (Good) with Revenue 92 and Merch 83 but a critical footfall anomaly and Ops at 62. Recommend a ZM visit this week. Focus: footfall root cause investigation, ET queue review, and Progressive coaching compliance. Prepare a 7-day KPI trend before the visit.</div></div>
+      </div>
+    </div>
+    <div class="action-bar">
+      <button class="act-btn prim" onclick="window.print()">⎙ Export PDF</button>
+      <button class="act-btn">Share with ZM</button>
+      <button class="act-btn">Send to Store Manager</button>
+      <button class="act-btn">Add to visit plan</button>
+    </div>
+  </div>
+</div>
+
+<!-- 7. SCORE WEIGHTAGE -->
+<div class="card" style="margin-bottom:16px;">
+  <div class="card-hdr">
+    <div class="hdr-icon" style="background:var(--paper3);color:var(--ink3);">W</div>
+    <span class="hdr-title">AI health score — weightage &amp; methodology</span>
+    <div class="hdr-right"><button class="collapse-btn" onclick="toggleSection('wt')">−</button></div>
+  </div>
+  <div class="collapsible" id="wt" style="max-height:1000px;">
+    <div class="card-body">
+      <p style="font-size:12px;color:var(--ink2);line-height:1.75;margin-bottom:16px;">The AI health score (76/100) is a weighted composite of 6 KPI performance scores. Each KPI variance vs benchmark is converted to a 0–100 score, then blended by the weights below. Section scores are computed from their respective KPI subsets.</p>
+      <div class="three-col" style="margin-bottom:16px;">
+        <div class="wt-item"><div class="wt-row"><span class="wt-n">Net Sales</span><span class="wt-p">30%</span></div><div class="wt-track"><div class="wt-fill" style="width:90%;background:#2a7dd4;"></div></div></div>
+        <div class="wt-item"><div class="wt-row"><span class="wt-n">Conversion %</span><span class="wt-p">25%</span></div><div class="wt-track"><div class="wt-fill" style="width:75%;background:#1D9E75;"></div></div></div>
+        <div class="wt-item"><div class="wt-row"><span class="wt-n">Footfall</span><span class="wt-p">15%</span></div><div class="wt-track"><div class="wt-fill" style="width:45%;background:#534AB7;"></div></div></div>
+        <div class="wt-item"><div class="wt-row"><span class="wt-n">Net Orders</span><span class="wt-p">10%</span></div><div class="wt-track"><div class="wt-fill" style="width:30%;background:#D85A30;"></div></div></div>
+        <div class="wt-item"><div class="wt-row"><span class="wt-n">Net ATV</span><span class="wt-p">10%</span></div><div class="wt-track"><div class="wt-fill" style="width:30%;background:#b45309;"></div></div></div>
+        <div class="wt-item"><div class="wt-row"><span class="wt-n">ET Wait Time ↓</span><span class="wt-p">10%</span></div><div class="wt-track"><div class="wt-fill" style="width:30%;background:#E24B4A;"></div></div></div>
+      </div>
+      <div style="background:var(--paper2);border-radius:var(--r);padding:14px;font-size:12px;color:var(--ink2);border:1px solid var(--bd);">
+        <strong style="color:var(--ink);">Scoring bands:</strong> 80–100 Excellent &nbsp;·&nbsp; 65–79 Good &nbsp;·&nbsp; 50–64 Needs attention &nbsp;·&nbsp; 35–49 At risk &nbsp;·&nbsp; 0–34 Critical<br><br>
+        <strong style="color:var(--ink);">Overall calculation:</strong><br>
+        95×0.30 + 95×0.25 + 10×0.15 + 95×0.10 + 85×0.10 + 40×0.10 = <strong>76/100 (Good)</strong><br><br>
+        <strong style="color:var(--ink);">Section calculations:</strong><br>
+        Revenue: 95×0.40 + 95×0.35 + 85×0.25 = <strong>92/100 (Excellent)</strong><br>
+        Operations: 40×0.60 + 95×0.40 = <strong>62/100 (Needs attention)</strong><br>
+        Merchandising: 85×0.50 + 72×0.30 + 95×0.20 = <strong>83/100 (Excellent)</strong><br>
+        Infrastructure: <strong>72/100 (Good)</strong> — contextual, adjusted by audit inputs
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /page -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+/* ── DATA ── */
+const D = {
+  mar:{ns:987656.78,ord:320.667,ff:768,atv:3080.01,pspd:24691.42,et:4.185,nob:3.841,qty:595,prog:45.584,sv:121.0,eye:173.5,upt:1.856,asp:1659.93,prog_pct:27.36,ret:3.56},
+  feb:{ns:755467.84,ord:258.917,ff:1117,atv:2917.80,pspd:20985.22,et:3.848,nob:3.383,qty:456,prog:37.5,sv:94.233,eye:148.517,upt:1.761,asp:1656.73,prog_pct:28.47,ret:3.75}
+};
+
+/* ── STORES AUTOCOMPLETE ── */
+const STORES = [
+  {code:"LKST1838",name:"Chennai Pallavaram",region:"South",tier:"Tier-I"},
+  {code:"LKST1781",name:"Delhi Chattarpur",region:"North",tier:"Tier-I"},
+  {code:"LKST1401",name:"Hyderabad Kondapur",region:"South",tier:"Tier-I"},
+  {code:"LKST1437",name:"Hyderabad Vanasthalipuram",region:"South",tier:"Tier-I"},
+  {code:"LKST1818",name:"Navi Mumbai Ulwe",region:"West",tier:"Tier-I"},
+  {code:"LKST1621",name:"Vadodara Waghodia",region:"West",tier:"Tier-II"},
+  {code:"LKST1764",name:"Nagpur Jaripatka",region:"West",tier:"Tier-II"},
+  {code:"LKST1502",name:"Bhatinda Bhucho Mandi",region:"North",tier:"Tier-III"},
+  {code:"LKST3026",name:"Mumbai Girgaon Chowpatty",region:"West",tier:"Tier-I"},
+  {code:"LKST4342",name:"Nashik Dwarka",region:"West",tier:"Tier-II"},
+  {code:"LKST4389",name:"Bhagalpur Tilkamanjhi",region:"East",tier:"Tier-III"},
+];
+const PERIODS = {
+  monthly:["Apr-26","Mar-26","Feb-26","Jan-26","Dec-25","Nov-25","Oct-25","Sep-25","Aug-25","Jul-25"],
+  weekly:["22-Apr-26","19-Apr-26","12-Apr-26","05-Apr-26","29-Mar-26","22-Mar-26"],
+  quarterly:["Q2-2026","Q1-2026","Q4-2025","Q3-2025"]
+};
+
+function renderStores(filter=''){
+  const dd = document.getElementById('storeDD');
+  const list = filter ? STORES.filter(s=>s.code.toLowerCase().includes(filter.toLowerCase())||s.name.toLowerCase().includes(filter.toLowerCase())) : STORES;
+  dd.innerHTML = list.map(s=>`<div class="search-opt" onclick="selectStore('${s.code}','${s.name}')"><div>${s.code}</div><div class="opt-sub">${s.name} · ${s.region} · ${s.tier}</div></div>`).join('');
+}
+function openDD(){ renderStores(); document.getElementById('storeDD').classList.add('open'); }
+function filterStores(){ const v=document.getElementById('storeInp').value; renderStores(v); document.getElementById('storeDD').classList.add('open'); }
+function selectStore(code,name){ document.getElementById('storeInp').value=`${code} — ${name}`; document.getElementById('storeDD').classList.remove('open'); }
+document.addEventListener('click',e=>{ if(!e.target.closest('#storeSearch')) document.getElementById('storeDD').classList.remove('open'); });
+
+function refreshPeriods(){
+  const g = document.getElementById('granSel').value;
+  const sel = document.getElementById('periodSel');
+  sel.innerHTML = (PERIODS[g]||PERIODS.monthly).map(p=>`<option>${p}</option>`).join('');
+}
+refreshPeriods();
+
+/* ── COLLAPSE ── */
+function toggleSection(id){
+  const el = document.getElementById(id);
+  const btn = el.previousElementSibling?.querySelector('.collapse-btn') || document.querySelector(`[onclick="toggleSection('${id}')"]`);
+  if(el.classList.contains('closed')){ el.classList.remove('closed'); if(btn) btn.textContent='−'; }
+  else { el.classList.add('closed'); if(btn) btn.textContent='+'; }
+}
+
+/* ── TABS ── */
+function switchTab(section, panel){
+  const tabsEl = document.getElementById(`${section}-tabs`);
+  if(!tabsEl) return;
+  tabsEl.querySelectorAll('.tab').forEach((t,i)=>{ t.classList.toggle('active', t.textContent.toLowerCase().replace(/\s+/g,''')===panel.toLowerCase()); });
+  // Fix: use onclick attribute
+  tabsEl.querySelectorAll('.tab').forEach(t=>{
+    const fn = t.getAttribute('onclick');
+    if(fn && fn.includes(`'${panel}'`)) t.classList.add('active');
+    else t.classList.remove('active');
+  });
+  document.querySelectorAll(`#${section}-${panel}, [id^="${section}-"]`).forEach(p=>{
+    p.classList.toggle('active', p.id===`${section}-${panel}`);
+  });
+  // Draw charts when chart tab opens
+  if(panel==='charts') { setTimeout(()=>drawAllCharts(), 50); }
+}
+
+/* ── VALIDATION TABLE ── */
+const pct = (c,b) => b ? ((c-b)/Math.abs(b)*100) : 0;
+function pctH(p,inv){
+  if(p===null) return '<span class="neu">—</span>';
+  const bad=inv?p>8:p<-5, good=inv?p<-3:p>3;
+  const cls=bad?'neg':good?'pos':'neu';
+  return `<span class="${cls}">${p>0?'+':''}${p.toFixed(1)}%</span>`;
+}
+function pillH(p,inv){
+  if(p===null) return '<span class="pill pill-n">N/A</span>';
+  const bad=inv?p>8:p<-5, warn=inv?p>3:p<-2, good=inv?p<-3:p>3, imp=inv&&p<-5;
+  if(imp) return `<span class="pill pill-g"><span class="dot" style="background:var(--green)"></span>Improving</span>`;
+  if(bad) return `<span class="pill pill-r"><span class="dot" style="background:var(--red)"></span>Critical</span>`;
+  if(warn) return `<span class="pill pill-a"><span class="dot" style="background:var(--amber)"></span>Watch</span>`;
+  if(good) return `<span class="pill pill-g"><span class="dot" style="background:var(--green)"></span>Healthy</span>`;
+  return `<span class="pill pill-b"><span class="dot" style="background:var(--blue)"></span>On track</span>`;
+}
+function frs(v){ return v!=null?'₹'+Math.round(v).toLocaleString('en-IN'):'—'; }
+
+const VAL_ROWS = [
+  ["Net Sales","[Net Sales]",D.mar.ns,D.feb.ns,"₹","rs",false],
+  ["Net Orders","[Net Orders]",D.mar.ord,D.feb.ord,"","dec",false],
+  ["Gross Orders","[Gross Orders]",332.5,269.0,"","dec",false],
+  ["Return rate %","derived (G-N)/G",D.mar.ret,D.feb.ret,"%","pct",true],
+  ["Footfall","[Footfall]",D.mar.ff,D.feb.ff,"","int",false],
+  ["Conversion %","derived ord/ff×100",D.mar.ord/D.mar.ff*100,D.feb.ord/D.feb.ff*100,"%","pct",false],
+  ["Net ATV","[Net ATV]",D.mar.atv,D.feb.atv,"₹","rs",false],
+  ["Gross ATV","[Gross ATV]",3110.09,2890.74,"₹","rs",false],
+  ["PSPD (₹/day)","[PSPD (Net Sales)]",D.mar.pspd,D.feb.pspd,"₹","rs",false],
+  ["ET Wait Time","[ET Wait Time]",D.mar.et,D.feb.et,"min","min",true],
+  ["NOB per Staff","[NOB per Staff]",D.mar.nob,D.feb.nob,"","dec",false],
+  ["Net Qty","[Net Qty]",D.mar.qty,D.feb.qty,"","int",false],
+  ["UPT","derived qty/ord",D.mar.upt,D.feb.upt,"","dec",false],
+  ["Net ASP (₹/unit)","derived ns/qty",D.mar.asp,D.feb.asp,"₹","rs",false],
+  ["Rev per Staff","derived nob×atv",D.mar.nob*D.mar.atv,D.feb.nob*D.feb.atv,"₹","rs",false],
+  ["Eye Orders","[Eye Net Orders]",D.mar.eye,D.feb.eye,"","dec",false],
+  ["Prog Orders","[Prog Net Orders]",D.mar.prog,D.feb.prog,"","dec",false],
+  ["SV Orders","[SV Net Orders]",D.mar.sv,D.feb.sv,"","dec",false],
+  ["Progressive share %","derived prog/(p+sv)×100",D.mar.prog_pct,D.feb.prog_pct,"%","pct",false],
+];
+
+function fmtV(v, fmt){
+  if(v==null) return '—';
+  if(fmt==='rs') return '₹'+Math.round(v).toLocaleString('en-IN');
+  if(fmt==='dec') return v.toFixed(2);
+  if(fmt==='pct') return v.toFixed(2)+'%';
+  if(fmt==='min') return v.toFixed(2)+' min';
+  if(fmt==='int') return Math.round(v).toLocaleString('en-IN');
+  return String(v);
+}
+function fmtAbs(d, fmt){
+  const s = d>=0?'+':'';
+  if(fmt==='rs') return `${s}₹${Math.round(Math.abs(d)).toLocaleString('en-IN')}`;
+  if(fmt==='pct') return `${s}${d.toFixed(2)} pp`;
+  if(fmt==='dec') return `${s}${d.toFixed(2)}`;
+  if(fmt==='min') return `${s}${d.toFixed(2)} min`;
+  if(fmt==='int') return `${s}${Math.round(d).toLocaleString('en-IN')}`;
+  return `${s}${d}`;
+}
+
+document.getElementById('val-tbody').innerHTML = VAL_ROWS.map(([n,src,mv,bv,_,fmt,inv])=>{
+  const p = pct(mv, bv);
+  return `<tr>
+    <td class="kn">${n}</td>
+    <td class="src">${src}</td>
+    <td class="r">${fmtV(mv,fmt)}</td>
+    <td class="r">${fmtV(bv,fmt)}</td>
+    <td class="r">${pctH(p,inv)}</td>
+    <td class="r">${fmtAbs(mv-bv,fmt)}</td>
+    <td class="r">${pillH(p,inv)}</td>
+  </tr>`;
+}).join('');
+
+/* ── CHARTS ── */
+const CC = { grid:'rgba(0,0,0,.06)', text:'#7a7970', mar:'#2a7dd4', feb:'#b8b6ac', green:'#2e7d32', amber:'#b45309', red:'#b91c1c' };
+const chartDefaults = { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false},tooltip:{backgroundColor:'#0f0e0c',titleColor:'#f0ede6',bodyColor:'#b8b6ac',cornerRadius:6,padding:10}}, scales:{x:{grid:{display:false},ticks:{color:CC.text,font:{size:10,family:'Sora'}}},y:{grid:{color:CC.grid,lineWidth:1},ticks:{color:CC.text,font:{size:10,family:'Sora'}}}}};
+let chartsDrawn = false;
+
+function drawAllCharts(){
+  if(chartsDrawn) return;
+  chartsDrawn = true;
+
+  // Revenue bar
+  new Chart(document.getElementById('c-rev-bar'),{type:'bar',data:{labels:['Net Sales (₹L)','Net Orders×100'],datasets:[{label:'Mar-26',data:[D.mar.ns/100000,D.mar.ord*100],backgroundColor:CC.mar},{label:'Feb-26',data:[D.feb.ns/100000,D.feb.ord*100],backgroundColor:CC.feb}]},options:{...chartDefaults,plugins:{...chartDefaults.plugins,legend:{display:true,position:'top',labels:{color:CC.text,font:{size:10}}}}}});
+
+  // ATV & Conversion
+  new Chart(document.getElementById('c-atv-cv'),{type:'bar',data:{labels:['ATV (₹)','Conversion (%)'],datasets:[{label:'Mar-26',data:[D.mar.atv,D.mar.ord/D.mar.ff*100],backgroundColor:[CC.mar,'rgba(42,125,212,.5)']},{label:'Feb-26',data:[D.feb.atv,D.feb.ord/D.feb.ff*100],backgroundColor:[CC.feb,'rgba(184,182,172,.5)']}]},options:{...chartDefaults,plugins:{...chartDefaults.plugins,legend:{display:true,position:'top',labels:{color:CC.text,font:{size:10}}}}}});
+
+  // PSPD
+  new Chart(document.getElementById('c-pspd'),{type:'bar',data:{labels:['PSPD Mar-26','PSPD Feb-26'],datasets:[{data:[D.mar.pspd,D.feb.pspd],backgroundColor:[CC.mar,CC.feb],borderRadius:4}]},options:{...chartDefaults}});
+
+  // ET Wait
+  new Chart(document.getElementById('c-et'),{type:'bar',data:{labels:['Mar-26','Feb-26'],datasets:[{data:[D.mar.et,D.feb.et],backgroundColor:[D.mar.et>D.feb.et?CC.amber:CC.green,CC.feb],borderRadius:4,barThickness:50}]},options:{...chartDefaults,scales:{...chartDefaults.scales,y:{...chartDefaults.scales.y,min:0,max:8,title:{display:true,text:'minutes',color:CC.text,font:{size:10}}}}}});
+
+  // NOB
+  new Chart(document.getElementById('c-nob'),{type:'bar',data:{labels:['Mar-26','Feb-26'],datasets:[{data:[D.mar.nob,D.feb.nob],backgroundColor:[CC.green,CC.feb],borderRadius:4,barThickness:50}]},options:{...chartDefaults}});
+
+  // UPT & ASP
+  new Chart(document.getElementById('c-upt'),{type:'bar',data:{labels:['UPT','ASP (÷100)'],datasets:[{label:'Mar-26',data:[D.mar.upt,D.mar.asp/100],backgroundColor:CC.mar},{label:'Feb-26',data:[D.feb.upt,D.feb.asp/100],backgroundColor:CC.feb}]},options:{...chartDefaults,plugins:{...chartDefaults.plugins,legend:{display:true,position:'top',labels:{color:CC.text,font:{size:10}}}}}});
+
+  // Lens mix doughnut
+  new Chart(document.getElementById('c-lens'),{type:'doughnut',data:{labels:['Progressive (Mar)','SV (Mar)','Progressive (Feb)','SV (Feb)'],datasets:[{data:[D.mar.prog,D.mar.sv,D.feb.prog,D.feb.sv],backgroundColor:['#2a7dd4','#b8b6ac','rgba(42,125,212,.3)','rgba(184,182,172,.3)'],borderWidth:2,borderColor:'var(--white)'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{color:CC.text,font:{size:10},boxWidth:10,padding:8}},tooltip:{backgroundColor:'#0f0e0c',titleColor:'#f0ede6',bodyColor:'#b8b6ac',cornerRadius:6}}}});
+}
+
+// Draw charts when chart tabs are initially visible
+document.querySelectorAll('.tab').forEach(t=>{ t.addEventListener('click',()=>{ if(t.textContent.toLowerCase()==='charts') setTimeout(drawAllCharts,80); }); });
+</script>
+</body>
+</html>
