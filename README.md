@@ -1,10 +1,11 @@
 # Store-Performance-Diagnostic-Agent
 An AI agent that identifies conversion change drivers per store, generates store-specific actionable playbooks for degrowing stores, and delivers automated health reports for Zonal Managers, built on the Store Insights Fabric semantic model. 
 
-================================================================================
-STORE PERFORMANCE DIAGNOSTIC AGENT
-Lenskart Offline Operations  |  Internal Hackathon  |  April 2026
-================================================================================
+
+**STORE PERFORMANCE DIAGNOSTIC AGENT**
+
+**Lenskart Offline Operations  |  Internal Hackathon  |  April 2026**
+
 
 Built with Claude Sonnet  |  PowerBI MCP Server  |  Microsoft Fabric XMLA
 1,572 stores  |  < 2 min per report  |  3 diagnostic levels  |  15+ KPIs
